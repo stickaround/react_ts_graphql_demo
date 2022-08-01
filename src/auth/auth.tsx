@@ -4,7 +4,6 @@ import { Login } from './login';
 import { Register } from './register';
 
 function Auth() {
-  console.log('auth');
   return (
     <Routes>
       <Route path='login' element={<Login />}></Route>
