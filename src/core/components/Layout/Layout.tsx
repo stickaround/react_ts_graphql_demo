@@ -9,7 +9,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <LayoutWrapper>
       <ContentWrapper>
         <Box component='header'>
-          <Header />
+          <Header mode='user' role='admin' />
         </Box>
         <Box component='main' sx={{ flexGrow: 1 }}>
           <DrawerHeader />

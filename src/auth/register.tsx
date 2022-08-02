@@ -11,16 +11,27 @@ import {
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { useMutation } from '@apollo/client';
 import { useFormik } from 'formik';
 
-import { register } from '../graphql/auth/mutation';
+import { useRegisterMutation } from '../graphql/generated';
 import { useNotificationContext } from '../contexts/notificationContext';
 
 function Register() {
-  const [registerUser] = useMutation(register);
+  const [registerUser, { data, loading }] = useRegisterMutation();
   const { createNotification } = useNotificationContext();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (data) {
+      if (data?.register?.error) {
+        createNotification('error', data.register.error);
+      } else {
+        localStorage.setItem('token', data?.register?.token ?? '');
+        createNotification('success', 'Register success!');
+        navigate('/posts');
+      }
+    }
+  }, [data]);
 
   const credentials = useFormik({
     initialValues: {
@@ -34,13 +45,6 @@ function Register() {
     onSubmit: (values) => {
       registerUser({
         variables: { username: values.username, password: values.password },
-      }).then(({ data }) => {
-        if (data.register.error) {
-          createNotification('error', data.register.error);
-        } else {
-          createNotification('success', 'Success!');
-          navigate('/posts');
-        }
       });
     },
   });

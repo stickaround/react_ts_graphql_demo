@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -13,10 +14,42 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-const navItems = ['Post', 'Login', 'Register'];
+const guestItems = [
+  {
+    label: 'Login',
+    path: 'login',
+  },
+  {
+    label: 'register',
+    path: 'register',
+  },
+];
 
-function Header() {
-  // const { window } = props;
+const userItems = [
+  {
+    label: 'Post',
+    path: 'posts',
+  },
+];
+
+const adminItems = [
+  {
+    label: 'User',
+    path: 'users',
+  },
+  {
+    label: 'Post',
+    path: 'posts',
+  },
+];
+
+function Header({ mode, role }: { mode: string; role: string }) {
+  const navItems =
+    mode === 'guest'
+      ? [...guestItems]
+      : role === 'admin'
+      ? [...adminItems]
+      : [...userItems];
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -31,10 +64,12 @@ function Header() {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
+          <ListItem key={item.label} disablePadding>
+            <Link to={item.path}>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            </Link>
           </ListItem>
         ))}
       </List>
@@ -65,21 +100,26 @@ function Header() {
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
-                {item}
-              </Button>
+              <Link
+                key={item.label}
+                to={item.path}
+                style={{ textDecoration: 'none' }}
+              >
+                <Button key={item.label} sx={{ color: '#fff' }}>
+                  {item.label}
+                </Button>
+              </Link>
             ))}
           </Box>
         </Toolbar>
       </AppBar>
       <Box component='nav'>
         <Drawer
-          // container={container}
           variant='temporary'
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },

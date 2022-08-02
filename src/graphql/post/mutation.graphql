@@ -1,0 +1,46 @@
+mutation CreatePost($title: String!, $content: String!) {
+  createPost(title: $title, content: $content) {
+    data {
+      _id
+      title
+      content
+      user {
+        _id
+        username
+        role
+      }
+    }
+    error
+  }
+}
+
+mutation UpdatePost($id: String!, $title: String, $content: String) {
+  updatePost(id: $id, title: $title, content: $content) {
+    data {
+      _id
+      title
+      content
+      user {
+        _id
+        username
+        role
+      }
+    }
+    error
+  }
+}
+
+mutation DeletePost($id: String!) {
+  deletePost(id: $id) {
+    data {
+      _id
+      title
+      content
+      user {
+        _id
+        username
+      }
+    }
+    error
+  }
+}
