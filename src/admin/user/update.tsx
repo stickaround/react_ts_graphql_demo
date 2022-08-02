@@ -4,62 +4,65 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 
-import { PostForm } from './form';
-import { useGetPostQuery, useUpdatePostMutation } from '../graphql/generated';
-import { useNotificationContext } from '../contexts/notificationContext';
+import { UserForm } from './form';
+import {
+  useGetUserQuery,
+  useUpdateUserMutation,
+} from '../../graphql/generated';
+import { useNotificationContext } from '../../contexts/notificationContext';
 
-function PostUpdate() {
+function UserUpdate() {
   const navigate = useNavigate();
   const { id = '' } = useParams();
-  const [updatePost, { data: updated, loading: updating }] =
-    useUpdatePostMutation();
-  const { data, loading } = useGetPostQuery({
+  const [updateUser, { data: updated, loading: updating }] =
+    useUpdateUserMutation();
+  const { data, loading } = useGetUserQuery({
     variables: { id },
   });
   const { createNotification } = useNotificationContext();
 
   React.useEffect(() => {
-    if (data?.post?.error) {
-      createNotification('error', data.post.error);
-      navigate('/posts');
+    if (data?.user?.error) {
+      createNotification('error', data.user.error);
+      navigate('/users');
     } else {
       payload.setTouched({
-        title: true,
-        content: true,
+        username: true,
+        password: false,
       });
       payload.setValues({
-        title: data?.post?.data?.title,
-        content: data?.post?.data?.content,
+        username: data?.user?.data?.username ?? '',
+        password: '',
       });
     }
   }, [data]);
 
   React.useEffect(() => {
     if (updated) {
-      if (updated?.updatePost?.error) {
-        createNotification('error', updated.updatePost.error);
+      if (updated?.updateUser?.error) {
+        createNotification('error', updated.updateUser.error);
       } else {
         createNotification('success', 'Successfully updated!');
-        navigate('/posts');
+        navigate('/users');
       }
     }
   }, [updated]);
 
   const payload = useFormik({
     initialValues: {
-      title: data?.post?.data?.title,
-      content: data?.post?.data?.content,
+      username: data?.user?.data?.username ?? '',
+      password: '',
     },
     validationSchema: Yup.object({
-      title: Yup.string().required('Input title!'),
-      content: Yup.string().required('Input content!'),
+      username: Yup.string().required('Input username!'),
+      password: Yup.string().required('Input password!'),
     }),
     onSubmit: (values) => {
-      updatePost({
+      updateUser({
         variables: {
           id,
-          title: values.title,
-          content: values.content,
+          username: values.username,
+          password: values.password,
         },
       });
     },
@@ -75,18 +78,18 @@ function PostUpdate() {
             component='div'
             sx={{ textAlign: 'center' }}
           >
-            UPDATE POST
+            UPDATE User
           </Typography>
-          <PostForm
+          <UserForm
             handleChange={payload.handleChange}
             handleSubmit={payload.handleSubmit}
             errors={{
-              title: payload.errors.title ?? '',
-              content: payload.errors.content ?? '',
+              username: payload.errors.username ?? '',
+              password: payload.errors.password ?? '',
             }}
             touched={{
-              title: payload.touched.title ?? false,
-              content: payload.touched.content ?? false,
+              username: payload.touched.username ?? false,
+              password: payload.touched.password ?? false,
             }}
             values={payload.values}
             submitText='Update'
@@ -97,4 +100,4 @@ function PostUpdate() {
   );
 }
 
-export { PostUpdate };
+export { UserUpdate };
