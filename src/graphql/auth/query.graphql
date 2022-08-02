@@ -1,0 +1,10 @@
+query getProfile {
+  getProfile {
+    data {
+      _id
+      username
+      role
+    }
+    error
+  }
+}
