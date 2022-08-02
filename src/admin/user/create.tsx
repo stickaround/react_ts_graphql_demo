@@ -4,38 +4,38 @@ import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 
-import { PostForm } from './form';
-import { useCreatePostMutation } from '../graphql/generated';
-import { useNotificationContext } from '../contexts/notificationContext';
+import { UserForm } from './form';
+import { useCreateUserMutation } from '../../graphql/generated';
+import { useNotificationContext } from '../../contexts/notificationContext';
 
-function PostCreate() {
+function UserCreate() {
   const navigate = useNavigate();
-  const [createPost, { data, loading }] = useCreatePostMutation();
+  const [createUser, { data, loading }] = useCreateUserMutation();
   const { createNotification } = useNotificationContext();
 
   React.useEffect(() => {
     if (data) {
-      if (data?.createPost?.error) {
-        createNotification('error', data.createPost.error);
+      if (data?.createUser?.error) {
+        createNotification('error', data.createUser.error);
       } else {
         createNotification('success', 'Successfully created!');
-        navigate('/posts');
+        navigate('/users');
       }
     }
   }, [data]);
 
   const payload = useFormik({
     initialValues: {
-      title: '',
-      content: '',
+      username: '',
+      password: '',
     },
     validationSchema: Yup.object({
-      title: Yup.string().required('Input title!'),
-      content: Yup.string().required('Input content!'),
+      username: Yup.string().required('Input title!'),
+      password: Yup.string().required('Input password!'),
     }),
     onSubmit: (values) => {
-      createPost({
-        variables: { title: values.title, content: values.content },
+      createUser({
+        variables: { username: values.username, password: values.password },
       });
     },
   });
@@ -49,18 +49,18 @@ function PostCreate() {
             component='div'
             sx={{ textAlign: 'center' }}
           >
-            CREATE POST
+            CREATE USER
           </Typography>
-          <PostForm
+          <UserForm
             handleChange={payload.handleChange}
             handleSubmit={payload.handleSubmit}
             errors={{
-              title: payload.errors.title ?? '',
-              content: payload.errors.content ?? '',
+              username: payload.errors.username ?? '',
+              password: payload.errors.password ?? '',
             }}
             touched={{
-              title: payload.touched.title ?? false,
-              content: payload.touched.content ?? false,
+              username: payload.touched.username,
+              password: payload.touched.password,
             }}
             values={payload.values}
             submitText='Create'
@@ -71,4 +71,4 @@ function PostCreate() {
   );
 }
 
-export { PostCreate };
+export { UserCreate };
