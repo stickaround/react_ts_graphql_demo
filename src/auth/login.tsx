@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {
   Container,
   Card,
@@ -10,16 +11,27 @@ import {
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { useMutation } from '@apollo/client';
 import { useFormik } from 'formik';
 
-import { login } from '../graphql/auth/mutation';
+import { useLoginMutation } from '../graphql/generated';
 import { useNotificationContext } from '../contexts/notificationContext';
 
 function Login() {
   const navigate = useNavigate();
-  const [loginUser] = useMutation(login);
+  const [loginUser, { data, loading }] = useLoginMutation();
   const { createNotification } = useNotificationContext();
+
+  React.useEffect(() => {
+    if (data) {
+      if (data?.login?.error) {
+        createNotification('error', data.login.error);
+      } else {
+        localStorage.setItem('token', data?.login?.token ?? '');
+        createNotification('success', 'Login success!');
+        navigate('/posts');
+      }
+    }
+  }, [data]);
 
   const credentials = useFormik({
     initialValues: {
@@ -30,16 +42,9 @@ function Login() {
       username: Yup.string().required('Input username!'),
       password: Yup.string().required('Input password!'),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       loginUser({
         variables: { username: values.username, password: values.password },
-      }).then(({ data }) => {
-        if (data.login.error) {
-          createNotification('error', data.login.error);
-        } else {
-          createNotification('success', 'Success!');
-          navigate('/posts');
-        }
       });
     },
   });

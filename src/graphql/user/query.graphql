@@ -1,0 +1,26 @@
+query getUsers {
+  users {
+    data {
+      _id
+      username
+      role
+    }
+    error
+  }
+}
+
+query getUser($id: String!) {
+  user(id: $id) {
+    data {
+      _id
+      username
+      role
+      posts {
+        _id
+        title
+        content
+      }
+    }
+    error
+  }
+}

@@ -1,0 +1,26 @@
+query getPosts {
+  posts {
+    data {
+      _id
+      title
+      content
+      user {
+        _id
+        username
+        role
+      }
+    }
+    error
+  }
+}
+
+query getPost($id: String!) {
+  post(id: $id) {
+    data {
+      _id
+      title
+      content
+    }
+    error
+  }
+}

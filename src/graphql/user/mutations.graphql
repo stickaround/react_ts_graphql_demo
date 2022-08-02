@@ -1,0 +1,37 @@
+mutation createUser($username: String!, $password: String!) {
+  createUser(username: $username, password: $password) {
+    data {
+      _id
+      username
+      role
+    }
+    error
+  }
+}
+
+mutation updateUser($id: String!, $username: String!, $password: String!) {
+  updateUser(id: $id, username: $username, password: $password) {
+    data {
+      _id
+      username
+      role
+      posts {
+        _id
+        title
+        content
+      }
+    }
+    error
+  }
+}
+
+mutation deleteUser($id: String!) {
+  deleteUser(id: $id) {
+    data {
+      _id
+      username
+      role
+    }
+    error
+  }
+}
