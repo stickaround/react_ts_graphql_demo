@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -8,11 +8,16 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+
+import { useGetProfileQuery } from '../../../graphql/generated';
 
 const guestItems = [
   {
@@ -43,17 +48,36 @@ const adminItems = [
   },
 ];
 
-function Header({ mode, role }: { mode: string; role: string }) {
+function Header({ mode }: { mode: string }) {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const { refetch } = useGetProfileQuery();
+
   const navItems =
     mode === 'guest'
       ? [...guestItems]
-      : role === 'admin'
+      : mode === 'admin'
       ? [...adminItems]
       : [...userItems];
-  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.setItem('token', '');
+    setAnchorEl(null);
+    refetch();
+    navigate('/login');
   };
 
   const drawer = (
@@ -98,7 +122,9 @@ function Header({ mode, role }: { mode: string; role: string }) {
           >
             POST MANAGEMENT
           </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box
+            sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center' }}
+          >
             {navItems.map((item) => (
               <Link
                 key={item.label}
@@ -110,6 +136,37 @@ function Header({ mode, role }: { mode: string; role: string }) {
                 </Button>
               </Link>
             ))}
+            {(mode === 'user' || mode === 'admin') && (
+              <div>
+                <IconButton
+                  size='large'
+                  aria-label='account of current user'
+                  aria-controls='menu-appbar'
+                  aria-haspopup='true'
+                  onClick={handleMenu}
+                  color='inherit'
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id='menu-appbar'
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </div>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

@@ -11,9 +11,8 @@ import { useNotificationContext } from '../contexts/notificationContext';
 function PostUpdate() {
   const navigate = useNavigate();
   const { id = '' } = useParams();
-  const [updatePost, { data: updated, loading: updating }] =
-    useUpdatePostMutation();
-  const { data, loading } = useGetPostQuery({
+  const [updatePost, { data: updated }] = useUpdatePostMutation();
+  const { data } = useGetPostQuery({
     variables: { id },
   });
   const { createNotification } = useNotificationContext();

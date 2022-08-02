@@ -70,7 +70,7 @@ export type MutationRegisterArgs = {
 
 export type MutationUpdatePostArgs = {
   content?: InputMaybe<Scalars['String']>;
-  id: Scalars['String'];
+  id?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
 };
 
@@ -102,6 +102,7 @@ export type PostResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  getProfile?: Maybe<UserResponse>;
   post?: Maybe<PostResponse>;
   posts?: Maybe<PostListResponse>;
   user?: Maybe<UserResponse>;
@@ -165,6 +166,22 @@ export type LoginMutation = {
   login?: {
     __typename?: 'AuthResponse';
     token: string;
+    error?: string | null;
+    data?: {
+      __typename?: 'User';
+      _id: string;
+      username?: string | null;
+      role?: string | null;
+    } | null;
+  } | null;
+};
+
+export type GetProfileQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetProfileQuery = {
+  __typename?: 'Query';
+  getProfile?: {
+    __typename?: 'UserResponse';
     error?: string | null;
     data?: {
       __typename?: 'User';
@@ -494,6 +511,66 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<
   LoginMutation,
   LoginMutationVariables
+>;
+export const GetProfileDocument = gql`
+  query getProfile {
+    getProfile {
+      data {
+        _id
+        username
+        role
+      }
+      error
+    }
+  }
+`;
+
+/**
+ * __useGetProfileQuery__
+ *
+ * To run a query within a React component, call `useGetProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProfileQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetProfileQuery,
+    GetProfileQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetProfileQuery, GetProfileQueryVariables>(
+    GetProfileDocument,
+    options
+  );
+}
+export function useGetProfileLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetProfileQuery,
+    GetProfileQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetProfileQuery, GetProfileQueryVariables>(
+    GetProfileDocument,
+    options
+  );
+}
+export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
+export type GetProfileLazyQueryHookResult = ReturnType<
+  typeof useGetProfileLazyQuery
+>;
+export type GetProfileQueryResult = Apollo.QueryResult<
+  GetProfileQuery,
+  GetProfileQueryVariables
 >;
 export const CreatePostDocument = gql`
   mutation CreatePost($title: String!, $content: String!) {

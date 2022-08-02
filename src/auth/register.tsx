@@ -13,12 +13,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 
-import { useRegisterMutation } from '../graphql/generated';
+import { useRegisterMutation, useGetProfileQuery } from '../graphql/generated';
 import { useNotificationContext } from '../contexts/notificationContext';
 
 function Register() {
   const [registerUser, { data, loading }] = useRegisterMutation();
   const { createNotification } = useNotificationContext();
+  const { refetch } = useGetProfileQuery();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -27,6 +28,7 @@ function Register() {
         createNotification('error', data.register.error);
       } else {
         localStorage.setItem('token', data?.register?.token ?? '');
+        refetch();
         createNotification('success', 'Register success!');
         navigate('/posts');
       }
@@ -108,7 +110,7 @@ function Register() {
               >
                 Register
               </Button>
-              <Link to='/auth/login' style={{ textDecoration: 'none' }}>
+              <Link to='/login' style={{ textDecoration: 'none' }}>
                 <Button size='small' color='info' variant='contained'>
                   Login
                 </Button>

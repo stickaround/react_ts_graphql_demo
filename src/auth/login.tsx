@@ -13,13 +13,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 
-import { useLoginMutation } from '../graphql/generated';
+import { useLoginMutation, useGetProfileQuery } from '../graphql/generated';
 import { useNotificationContext } from '../contexts/notificationContext';
 
 function Login() {
   const navigate = useNavigate();
   const [loginUser, { data, loading }] = useLoginMutation();
   const { createNotification } = useNotificationContext();
+  const { refetch } = useGetProfileQuery();
 
   React.useEffect(() => {
     if (data) {
@@ -27,6 +28,7 @@ function Login() {
         createNotification('error', data.login.error);
       } else {
         localStorage.setItem('token', data?.login?.token ?? '');
+        refetch();
         createNotification('success', 'Login success!');
         navigate('/posts');
       }
@@ -107,7 +109,7 @@ function Login() {
               >
                 Login
               </Button>
-              <Link to='/auth/register' style={{ textDecoration: 'none' }}>
+              <Link to='/register' style={{ textDecoration: 'none' }}>
                 <Button size='small' color='info' variant='contained'>
                   Register
                 </Button>
