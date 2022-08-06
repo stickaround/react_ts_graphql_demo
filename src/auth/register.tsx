@@ -17,7 +17,7 @@ import { useRegisterMutation, useGetProfileQuery } from '../graphql/generated';
 import { useNotificationContext } from '../contexts/notificationContext';
 
 function Register() {
-  const [registerUser, { data, loading }] = useRegisterMutation();
+  const [registerUser, { data }] = useRegisterMutation();
   const { createNotification } = useNotificationContext();
   const { refetch } = useGetProfileQuery();
   const navigate = useNavigate();
@@ -44,8 +44,8 @@ function Register() {
       username: Yup.string().required('Input username!'),
       password: Yup.string().required('Input password!'),
     }),
-    onSubmit: (values) => {
-      registerUser({
+    onSubmit: async (values) => {
+      await registerUser({
         variables: { username: values.username, password: values.password },
       });
     },

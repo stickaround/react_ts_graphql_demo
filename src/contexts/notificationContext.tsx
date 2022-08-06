@@ -1,18 +1,19 @@
 import * as React from 'react';
 import { AlertColor } from '@mui/material';
+import { Notification } from '../core/components/Notification';
 
 type Notification = {
   status: boolean;
   type: AlertColor;
   message: string;
 };
-type NotificationProviderProps = { children: React.ReactNode };
+export type NotificationProviderProps = { children: React.ReactNode };
 
-const NotificationContext = React.createContext<
+export const NotificationContext = React.createContext<
   | {
       notification: Notification;
-      createNotification: Function;
-      closeNotification: Function;
+      createNotification: (type: AlertColor, message: string) => void;
+      closeNotification: () => void;
     }
   | undefined
 >(undefined);
@@ -23,12 +24,15 @@ function NotificationProvider({ children }: NotificationProviderProps) {
     type: 'info',
     message: '',
   });
-  const createNotification = (type: AlertColor, message: string) =>
-    setNotification({
-      status: true,
-      type,
-      message,
-    });
+  const createNotification = React.useCallback(
+    (type: AlertColor, message: string) =>
+      setNotification({
+        status: true,
+        type,
+        message,
+      }),
+    []
+  );
   const closeNotification = () => {
     setNotification({
       status: false,
@@ -42,6 +46,7 @@ function NotificationProvider({ children }: NotificationProviderProps) {
       value={{ notification, createNotification, closeNotification }}
     >
       {children}
+      <Notification />
     </NotificationContext.Provider>
   );
 }

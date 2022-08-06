@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import {
   Container,
@@ -21,10 +20,8 @@ import { useNotificationContext } from '../contexts/notificationContext';
 function PostList() {
   const [confirmModalOpen, setConfirmModalOpen] = React.useState(false);
   const [deletingId, setDeletingId] = React.useState('');
-  const navigate = useNavigate();
-  const { data, loading, refetch } = useGetPostsQuery();
-  const [deletePost, { data: deleted, loading: deleting }] =
-    useDeletePostMutation();
+  const { data, refetch } = useGetPostsQuery();
+  const [deletePost, { data: deleted }] = useDeletePostMutation();
   const { createNotification } = useNotificationContext();
 
   React.useEffect(() => {
