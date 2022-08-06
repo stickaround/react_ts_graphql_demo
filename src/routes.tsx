@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toast';
 
 import App from './App';
 import { Layout } from './core/components/Layout';
@@ -30,7 +31,7 @@ function PostRoutes() {
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
           </Routes>
-          <Notification />
+          <ToastContainer position='top-right' delay={2000} />
         </Layout>
       </NotificationProvider>
     </BrowserRouter>
@@ -43,7 +44,7 @@ function PostRoutes() {
             <Route path='/posts/*' element={<Post />} />
             <Route path='/users/*' element={<User />} />
           </Routes>
-          <Notification />
+          <ToastContainer position='top-right' delay={2000} />
         </Layout>
       </NotificationProvider>
     </BrowserRouter>
@@ -55,7 +56,7 @@ function PostRoutes() {
             <Route path='/' element={<App />} />
             <Route path='/posts/*' element={<Post />} />
           </Routes>
-          <Notification />
+          <ToastContainer position='top-right' delay={2000} />
         </Layout>
       </NotificationProvider>
     </BrowserRouter>

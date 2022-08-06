@@ -102,7 +102,7 @@ function Header({ mode }: { mode: string }) {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar component='nav'>
+      <AppBar component='nav' sx={{ zIndex: 0 }}>
         <Toolbar>
           <IconButton
             color='inherit'

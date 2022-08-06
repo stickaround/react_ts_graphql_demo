@@ -18,7 +18,7 @@ import { useNotificationContext } from '../contexts/notificationContext';
 
 function Login() {
   const navigate = useNavigate();
-  const [loginUser, { data, loading }] = useLoginMutation();
+  const [loginUser, { data }] = useLoginMutation();
   const { createNotification } = useNotificationContext();
   const { refetch } = useGetProfileQuery();
 
@@ -45,7 +45,7 @@ function Login() {
       password: Yup.string().required('Input password!'),
     }),
     onSubmit: async (values) => {
-      loginUser({
+      await loginUser({
         variables: { username: values.username, password: values.password },
       });
     },
@@ -69,6 +69,7 @@ function Login() {
                 label='Username'
                 name='username'
                 variant='standard'
+                data-testid='username'
                 error={
                   !!(
                     credentials.touched.username && credentials.errors.username
