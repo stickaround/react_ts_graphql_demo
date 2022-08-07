@@ -28,7 +28,9 @@ function ConfirmModal(props: ConfirmModalProps) {
         <Button autoFocus onClick={handleCancel}>
           Cancel
         </Button>
-        <Button onClick={onOk}>Ok</Button>
+        <Button data-testid='confirmOK' onClick={onOk}>
+          Ok
+        </Button>
       </DialogActions>
     </Dialog>
   );

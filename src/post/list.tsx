@@ -76,6 +76,7 @@ function PostList() {
                 </Link>
                 <IconButton
                   aria-label='delete'
+                  data-testid={`delete${item?._id}`}
                   onClick={() => handleOpenModal(item?._id)}
                 >
                   <DeleteIcon />
